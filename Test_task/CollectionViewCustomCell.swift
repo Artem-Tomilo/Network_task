@@ -12,6 +12,7 @@ class CollectionViewCustomCell: UICollectionViewCell {
     private let background: UIView
     private let image: UIImageView
     private let button: UIButton
+    private var blurEffectView = UIVisualEffectView()
     
     override init(frame: CGRect) {
         self.background = UIView()
@@ -39,25 +40,42 @@ class CollectionViewCustomCell: UICollectionViewCell {
             background.heightAnchor.constraint(equalTo: contentView.heightAnchor),
             background.widthAnchor.constraint(equalTo: contentView.widthAnchor),
             
-            image.topAnchor.constraint(equalTo: background.topAnchor, constant: 5),
-            image.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: 5),
-            image.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -5),
-            image.bottomAnchor.constraint(equalTo: background.bottomAnchor, constant: -5),
+            image.heightAnchor.constraint(equalTo: background.heightAnchor),
+            image.widthAnchor.constraint(equalTo: background.widthAnchor),
             
             button.topAnchor.constraint(equalTo: image.topAnchor, constant: 10),
             button.leadingAnchor.constraint(equalTo: image.leadingAnchor, constant: 10),
             button.heightAnchor.constraint(equalToConstant: 20),
             button.widthAnchor.constraint(equalToConstant: 20)
         ])
+        
         button.layer.cornerRadius = 10
-        button.backgroundColor = .gray
+        button.backgroundColor = .systemGray5
         button.alpha = 0.5
         button.setTitle("!", for: .normal)
         button.setTitleColor(.black, for: .normal)
         
-        image.backgroundColor = .cyan
-        background.backgroundColor = .blue
+        image.backgroundColor = .systemGray5
+        background.backgroundColor = .clear
+        image.clipsToBounds = true
+        image.layer.cornerRadius = 5
         
-        background.layer.cornerRadius = 5
+        addBlurEffect()
+    }
+    
+     func addBlurEffect() {
+        let blurEffect = UIBlurEffect(style: .regular)
+        blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = image.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        image.addSubview(blurEffectView)
+    }
+    
+    func showImage() {
+        blurEffectView.effect = .none
+    }
+    
+    func bind(data: Data) {
+        image.image = UIImage(data: data)
     }
 }
